@@ -12,8 +12,10 @@
     "docker:prod": "docker-compose -f docker-compose.prod.yml up --build -d"
   },
   "dependencies": {
+    "@prisma/client": "^7.3.0",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.5.0",
+    "dotenv": "^17.2.4",
     "framer-motion": "^12.33.0",
     "next": "16.1.6",
     "react": "19.2.3",
@@ -28,6 +30,7 @@
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
+    "prisma": "^7.3.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

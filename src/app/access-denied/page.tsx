@@ -1,11 +1,9 @@
-// src/app/access-denied/page.tsx
 import Link from "next/link";
 
 export default function AccessDenied() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 px-4 text-center">
       <div className="max-w-md w-full bg-white shadow-lg rounded-2xl p-8 border border-gray-200">
-        {/* Icon กุญแจหรือเครื่องหมายตกใจ */}
         <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-6">
           <svg
             className="h-10 w-10 text-red-600"
@@ -45,7 +43,6 @@ export default function AccessDenied() {
           </ul>
         </div>
 
-        {/* ปุ่มลองใหม่ (Optional) */}
         <Link
           href="/"
           className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors duration-200 w-full"

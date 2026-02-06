@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🌌 Celestial Zodiac Wheel (MU-DIGITAL)
 
-## Getting Started
+**Interactive Zodiac Experience** — เว็บแอปพลิเคชันเสี่ยงทายและแสดงผลจักรราศี 3D พัฒนาด้วย **Next.js 16**, **React 19**, **Three.js** และ **Prisma 7**
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🚀 การติดตั้งและใช้งาน (Installation & Usage)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 1. เริ่มต้นใช้งาน (Setup)
+1.  **ติดตั้ง Dependencies:**
+    ```bash
+    npm install
+    ```
+2.  **ตั้งค่า Environment (.env):**
+    สร้างไฟล์ `.env` ที่ root folder:
+    ```env
+    # สำหรับ Docker (Service Name):
+    # DATABASE_URL="mongodb://root:password@mongo:27017/mu-digital?authSource=admin"
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+    # สำหรับ Localhost:
+    DATABASE_URL="mongodb://root:password@localhost:27017/mu-digital?authSource=admin&directConnection=true"
+    ```
+3.  **สร้าง Prisma Client (สำคัญ):**
+    ทุกครั้งที่แก้ Schema หรือติดตั้งใหม่ ต้องรัน:
+    ```bash
+    npx prisma generate
+    ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 2. การรันด้วย Docker (Recommended)
+โปรเจกต์นี้ตั้งค่า Docker ไว้พร้อมใช้งาน ผ่านคำสั่ง:
 
-## Learn More
+| คำสั่ง | รายละเอียด |
+| :--- | :--- |
+| **`npm run docker:dev`** | 🛠️ **Dev Mode:** รันแอปคู่กับ MongoDB (Hot Reload) |
+| **`npm run docker:down`** | 🛑 **Stop:** หยุดและลบ Containers |
+| **`npm run docker:prod`** | 🚀 **Production:** Build และรันโหมดใช้งานจริง |
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📝 ข้อกำหนดและข้อควรระวัง (Requirements & Notes)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1.  **Prisma & Docker:**
+    * ห้ามกำหนด `output` ใน `schema.prisma` ให้ใช้ค่า Default (`node_modules`) เพื่อป้องกันปัญหา Path ใน Docker
+    * ต้องรัน `npx prisma generate` เสมอก่อน build หรือ run dev
+2.  **Tailwind CSS v4:**
+    * ใช้ Engine ตัวใหม่ (Oxygen) ไม่ต้องมีไฟล์ `tailwind.config.js` การตั้งค่า theme อยู่ใน CSS Variables
+3.  **3D Assets:**
+    * ไฟล์โมเดล (`.glb`, `.gltf`) ให้วางไว้ในโฟลเดอร์ `/public`
+4.  **Database:**
+    * หากรันแบบ Local ต้องมั่นใจว่า MongoDB ในเครื่องรันอยู่ หรือ Map Port 27017 ออกมาจาก Docker แล้ว
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📂 โครงสร้างโปรเจกต์ (Project Structure)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+ใช้รูปแบบ **Clean Architecture** แยก UI, Logic และ Data:
+
+```text
+src/
+├── app/                  # 🌐 Routing Layer (Next.js App Router)
+│   ├── api/              # API Endpoints (External access)
+│   ├── access-denied/    # Error Page
+│   └── home/             # Main Page
+├── components/           # 🎨 UI Components (Presentation Layer)
+│   └── CelestialWheel.tsx
+├── lib/                  # ⚙️ Infrastructure Layer
+│   └── db.ts             # Prisma Client Singleton
+├── services/             # 🧠 Business Logic Layer (Connect DB)
+│   └── zodiac.service.ts
+├── middleware.ts         # 🛡️ Global Gatekeeper (Security)
+└── prisma/
+    └── schema.prisma     # Database Schema

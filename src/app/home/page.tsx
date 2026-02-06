@@ -1,4 +1,4 @@
-import CelestialZodiacWheel from "@/components/CelestialZodiacWheel";
+import CelestialZodiacWheel from '@/app/components/CelestialZodiacWheel'
 
 
 export default function Home() {
