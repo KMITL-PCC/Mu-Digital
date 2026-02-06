@@ -1,0 +1,28 @@
+# Dependencies (ลงใหม่ใน container เสมอ)
+node_modules
+npm-debug.log
+
+# Next.js Build Output (build ใหม่ใน container)
+.next
+
+# Environment Variables (สำคัญมาก! อย่าเอา key หลุดเข้าไปใน image)
+.env
+.env*.local
+
+# Version Control & IDE Settings
+.git
+.gitignore
+.codesight
+.vscode
+.idea
+
+# Docker files (ไม่จำเป็นต้อง copy ตัวเองเข้าไป)
+Dockerfile
+docker-compose*.yml
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Documentation
+README.md
