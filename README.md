@@ -31,9 +31,10 @@
 
 | คำสั่ง | รายละเอียด |
 | :--- | :--- |
-| **`npm run docker:dev`** | 🛠️ **Dev Mode:** รันแอปคู่กับ MongoDB (Hot Reload) |
+| **`npm run docker:dev`** | 🛠️ **Dev Mode:** รันแอปคู่กับ MongoDB and Prisma studio (Hot Reload) |
 | **`npm run docker:down`** | 🛑 **Stop:** หยุดและลบ Containers |
 | **`npm run docker:prod`** | 🚀 **Production:** Build และรันโหมดใช้งานจริง |
+| **`npm run docker:stop`** | 🛑 **Stop:** หยุดและลบ **Production  |
 
 ---
 
