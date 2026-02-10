@@ -230,48 +230,53 @@ function WheelContent() {
 									initial={{ scale: 0.7, y: 50, opacity: 0 }}
 									animate={{ scale: 1, y: 0, opacity: 1 }}
 									transition={{ type: "spring", stiffness: 260, damping: 20 }}
-									className="relative bg-gradient-to-b from-slate-900 to-black border border-yellow-500/60 rounded-2xl shadow-2xl max-w-6xl max-h-[480px] h-full  w-full p-6 text-center flex flex-col gap-4 justify-center items-center"
+									className="relative bg-gradient-to-b from-slate-900 to-black border border-yellow-500/60 rounded-2xl shadow-2xl max-w-5xl max-h-[480px] h-full  w-full px-6 py-4 text-center flex flex-col  justify-center items-center"
 								>
-									{/* ปุ่มปิด */}
-									<button
-										onClick={() => setResult(null)}
-										className="absolute top-3 right-3 text-yellow-400 hover:text-yellow-300 text-xl"
-									>
-										✕
-									</button>
-
-									<h2
-										className={`text-3xl font-extrabold mb-2 drop-shadow-lg sm:text-5xl ${
-											result.category === "BAD"
-												? "text-red-500"
-												: "text-green-400"
-										}`}
-									>
-										ตกที่: {result.name}
-									</h2>
-
-									<div className="w-14 h-1 bg-yellow-500 mx-auto mb-4 rounded-full"></div>
-
-									{/* เพิ่ม whitespace-pre-line ตรงนี้เพื่อให้ \n ทำงาน */}
-									<p className="text-yellow-100/90 text-base leading-relaxed mb-6 whitespace-pre-line sm:text-2xl">
-										{result.description}
-									</p>
-
-									<div className="flex gap-4 w-full">
+									<div className="flex flex-col gap-8">
+										{/* ปุ่มปิด */}
 										<button
 											onClick={() => setResult(null)}
-											className="flex-1 py-3 rounded-xl font-bold bg-slate-700 hover:bg-slate-600 text-white transition cursor-pointer text-base sm:text-2xl"
+											className="absolute top-3 right-3 text-yellow-400 hover:text-yellow-300 text-xl"
 										>
-											ปิด
+											✕
 										</button>
 
-										<button
-											onClick={() => (window.location.href = "/")}
-											className="flex gap-2 flex-1 py-3 rounded-xl justify-center items-center font-bold bg-gradient-to-r from-red-600 to-red-800 hover:from-red-500 hover:to-red-700 text-white transition shadow-lg cursor-pointer text-base sm:text-2xl"
-										>
-											<IterationCw className="size-6" />
-											ทำนายใหม่
-										</button>
+										<div className="flex flex-col gap-4">
+											<h2
+												className={`text-3xl font-extrabold mb-2 drop-shadow-lg sm:text-5xl ${
+													result.category === "BAD"
+														? "text-red-500"
+														: "text-green-400"
+												}`}
+											>
+												ตกที่: {result.name}
+											</h2>
+
+											<div className="w-14 h-1 bg-yellow-500 mx-auto mb-4 rounded-full"></div>
+										</div>
+										{/* เพิ่ม whitespace-pre-line ตรงนี้เพื่อให้ \n ทำงาน */}
+										<p className="text-yellow-100/90 text-base text-left leading-relaxed mb-6 whitespace-pre-line sm:text-2xl">
+											{result.description}
+										</p>
+
+										<div className="flex gap-4 w-full">
+											<button
+												onClick={() => setResult(null)}
+												className="flex-1 py-3 rounded-xl font-bold bg-slate-700 hover:bg-slate-600 text-white transition cursor-pointer text-base sm:text-2xl"
+											>
+												ปิด
+											</button>
+
+											<button
+												onClick={() =>
+													(window.location.href = "/gender-selection")
+												}
+												className="flex gap-2 flex-1 py-3 rounded-xl justify-center items-center font-bold bg-gradient-to-r from-red-600 to-red-800 hover:from-red-500 hover:to-red-700 text-white transition shadow-lg cursor-pointer text-base sm:text-2xl"
+											>
+												<IterationCw className="size-6" />
+												ทำนายใหม่
+											</button>
+										</div>
 									</div>
 								</motion.div>
 							</motion.div>
