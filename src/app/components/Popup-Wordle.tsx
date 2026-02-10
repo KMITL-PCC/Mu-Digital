@@ -1,70 +1,173 @@
-import { useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion';
+'use client'
+import { useEffect, useRef } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import '../globals.css'
 
 type PopupWordleProps = {
-    open: boolean;
-    onClose: () => void;
-};
-
-function PopupWordle({ open, onClose }: PopupWordleProps) {
-    useEffect(() => {
-        if (open) {
-            document.body.style.overflow = "hidden";
-        } else {
-            document.body.style.overflow = "";
-        }
-        return () => {
-            document.body.style.overflow = "";
-        };
-    }, [open]);
-
-    return (
-        <AnimatePresence>
-            {open && (
-                <motion.div
-                    className="m-0 p-0 flex items-center justify-center fixed inset-0 font-sans bg-black/60 backdrop-blur-sm z-[999]"
-                    onClick={onClose}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                >
-                    <motion.div
-                        onClick={(e) => e.stopPropagation()}
-                        className="w-80 h-auto max-h-[70vh] bg-white shadow-md rounded-xl grid grid-rows-8"
-                        initial={{ scale: 0.8, y: 40, opacity: 0 }}
-                        animate={{ scale: 1, y: 0, opacity: 1 }}
-                        exit={{ scale: 0.8, y: 40, opacity: 0 }}
-                        transition={{ type: "spring", stiffness: 260, damping: 20 }}
-                    >
-                        <div className='m-0 p-0 flex items-center justify-center fixed inset-0 font-sans z-[999]'>
-                            <div className='w-80 h-auto max-h-[70vh] bg-white shadow-md rounded-xl grid grid-rows-8'>
-                                <div className="flex flex-cols items-center justify-center row-span-1 p-2 shadow-md">
-                                    <h1 className='font-bold text-2xl'>Your Prediction</h1>
-                                </div>
-                                <div className="row-span-6 overflow-y-auto custom-scrollbar">
-                                    <div className='flex justify-center p-2'>
-                                        <img src="mu.png" className='h-40 w-auto flex items-center justify-center' />
-                                    </div>
-                                    <div className='p-4 gap-4 text-center'>
-                                        <h1 className='text-2xl font-bold'>คนต้องขื่อคา</h1>
-                                        <h2 className='leading-relaxed'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia, beatae. Officiis itaque ratione saepe aperiam iure veritatis odio molestias iusto fugiat nihil laborum perferendis exercitationem dolore nesciunt, magnam, culpa nostrum!
-                                            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Odit iure consectetur ipsa voluptatum vitae deleniti hic perspiciatis eligendi asperiores, maiores accusantium dignissimos quas? Doloribus ab omnis nulla deserunt fugit. Similique.
-                                            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Commodi accusamus labore facilis consequuntur earum nihil ea fugiat, deleniti quos nisi? Voluptate at quasi sequi tempora tempore repellat non, eos reiciendis!
-                                        </h2>
-                                    </div>
-                                </div>
-                                <div className="row-span-1 flex items-center justify-center shadow-[0_-2px_5px_rgba(0,0,50,0.2)]">
-                                    <button className='bg-blue-200  w-40 h-12 rounded-lg hover:bg-blue-500 '>ดูดวงอีกครั้ง</button>  {/* onclick กลับไปหน้าให้เลือก gender เพื่อความสะดวกสบาย */}
-                                </div>
-                            </div>
-                        </div>
-                    </motion.div>
-                </motion.div>
-            )
-            }
-        </AnimatePresence >
-    );
+  open: boolean
+  onClose: () => void
 }
+type Particle = {
+  x: number
+  y: number
+  vx: number
+  vy: number
+  life: number
+  color: string
+}
+function PopupWordle({ open, onClose }: PopupWordleProps) {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null)
+  const popupRef = useRef<HTMLDivElement | null>(null)
+  const particles = useRef<Particle[]>([])
+  const raf = useRef<number | null>(null)
 
+  useEffect(() => {
+    document.body.style.overflow = open ? 'hidden' : ''
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [open])
+
+  useEffect(() => {
+    if (!open) return
+    const canvas = canvasRef.current
+    const popup = popupRef.current
+    if (!canvas || !popup) return
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+    const resize = () => {
+      canvas.width = window.innerWidth
+      canvas.height = window.innerHeight
+    }
+    resize()
+    window.addEventListener('resize', resize)
+    const colors = ['#a855f7', '#38bdf8', '#22d3ee', '#c084fc', '#f472b6']
+    const spawnBurst = () => {
+      const rect = popup.getBoundingClientRect()
+      const points = [
+        { x: rect.left - 80, y: rect.top + rect.height * 0.3 },
+        { x: rect.right + 80, y: rect.top + rect.height * 0.3 },
+        { x: rect.left + rect.width * 0.3, y: rect.top - 80 },
+        { x: rect.left + rect.width * 0.7, y: rect.bottom + 80 },
+        { x: rect.right + 60, y: rect.bottom - 60 }
+      ]
+      points.forEach((pos, i) => {
+        const color = colors[i % colors.length]
+        for (let j = 0; j < 40; j++) {
+          const angle = Math.random() * Math.PI * 2
+          const speed = Math.random() * 3 + 1.5
+          particles.current.push({
+            x: pos.x,
+            y: pos.y,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            life: 90,
+            color
+          })
+        }
+      })
+    }
+    spawnBurst()
+    const interval = setInterval(spawnBurst, 1600)
+    const update = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      ctx.globalCompositeOperation = 'lighter'
+      particles.current = particles.current.filter(p => p.life > 0)
+      particles.current.forEach(p => {
+        p.vy += 0.02
+        p.x += p.vx
+        p.y += p.vy
+        p.life--
+        ctx.strokeStyle = p.color
+        ctx.lineWidth = 1.6
+        ctx.beginPath()
+        ctx.moveTo(p.x, p.y)
+        ctx.lineTo(p.x - p.vx * 2, p.y - p.vy * 2)
+        ctx.stroke()
+      })
+      raf.current = requestAnimationFrame(update)
+    }
+    update()
+    return () => {
+      clearInterval(interval)
+      if (raf.current) cancelAnimationFrame(raf.current)
+      window.removeEventListener('resize', resize)
+      particles.current = []
+    }
+  }, [open])
+  return (
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          className="fixed inset-0 z-[999] flex items-center justify-center bg-slate-700/50 backdrop-blur-sm"
+          onClick={onClose}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <canvas
+            ref={canvasRef}
+            className="absolute inset-0 pointer-events-none"
+          />
+          <motion.div
+            ref={popupRef}
+            onClick={e => e.stopPropagation()}
+            className="
+              relative z-10
+              w-[520px] max-h-[80vh]
+              rounded-2xl
+              bg-gradient-to-br from-[#0b1020] to-[#05070f]
+              text-white
+              grid grid-rows-[auto_1fr_auto]
+              overflow-hidden
+            "
+            initial={{ scale: 0.9, y: 40, opacity: 0 }}
+            animate={{ scale: 1, y: 0, opacity: 1 }}
+            exit={{ scale: 0.9, y: 40, opacity: 0 }}
+          >
+            <div className="py-4 text-center border-b border-white/10">
+              <h1 className="text-xl font-semibold">ผลการทำนาย</h1>
+            </div>
+            <div className="popup-scroll px-8 py-6 space-y-6 overflow-y-auto">
+                <style jsx>{`
+                .popup-scroll {
+                    scrollbar-width: none;
+                    -ms-overflow-style: none;
+                }
+                .popup-scroll::-webkit-scrollbar {
+                    display: none;
+                }
+                `}</style>
+              <div className="flex justify-center">
+                <img src="mu.png" className="h-48" />
+              </div>
+              <div className="text-center space-y-3">
+                <h2 className="text-2xl font-bold text-purple-300">
+                  คนต้องขื่อคา
+                </h2>
+                <p className="text-sm leading-relaxed text-slate-300">
+                  อุอิอ๊า
+                  <br /><br />
+                  Adults often deny believing in magic, but on closer inspection, much of our behavior is more magical than we think.
+                   Eugene Subbotsky, who for over 40 years has studied the development of magical thinking, has suggested that in adults,
+                    magical beliefs are simply suppressed and can be reactivated given the appropriate conditions.
+                     His research also suggests that when denial of a magical belief is costly,
+                      adults are happy to give up their belief in the power of physical causality and view the world in terms of magical explanations.
+                </p>
+              </div>
+            </div>
+            <div className="py-4 flex justify-center border-t border-white/10">
+              <button
+                onClick={onClose}
+                className="px-8 h-11 rounded-lg bg-purple-600 hover:bg-purple-500 transition"
+              >
+                ดูดวงอีกครั้ง
+              </button>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  )
+}
 export default PopupWordle

@@ -1,7 +1,12 @@
+<<<<<<< HEAD
 "use client";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+=======
+import CelestialZodiacWheel from '@/app/components/CelestialZodiacWheel'
+import PopupWordle from '../components/Popup-Wordle';
+>>>>>>> 86feed1d86346cefc10c04e8315be625d7060a21
 
 type Star = {
 	top: string;
@@ -12,6 +17,7 @@ type Star = {
 };
 
 export default function Home() {
+<<<<<<< HEAD
 	const router = useRouter();
 	const [mounted, setMounted] = useState(false);
 	const [stars, setStars] = useState<Star[]>([]);
@@ -121,3 +127,12 @@ export default function Home() {
 		</div>
 	);
 }
+=======
+    return (
+        <div>
+            <CelestialZodiacWheel />
+            {/* <PopupWordle /> */}
+        </div>
+    );
+}
+>>>>>>> 86feed1d86346cefc10c04e8315be625d7060a21
