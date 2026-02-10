@@ -1,4 +1,13 @@
+"use client";
+
+import { useRouter } from 'next/navigation';
+
+
+
 export default function Home() {
+  const router = useRouter();
+
+  
   return (
     <div className="relative h-screen w-full overflow-hidden font-serif">
       {/* Spline */}
@@ -37,7 +46,9 @@ export default function Home() {
 
         {/* CTA */}
         <div className="mt-10 pointer-events-auto">
-          <button className="rounded-full border border-purple-400/60 px-8 py-3 text-purple-200 hover:bg-purple-400/20 hover:shadow-[0_0_30px_rgba(168,85,247,0.4)] transition">
+          <button 
+          onClick={() => router.push('/gender-selection')}
+          className="rounded-full border border-purple-400/60 px-8 py-3 text-purple-200 hover:bg-purple-400/20 hover:shadow-[0_0_30px_rgba(168,85,247,0.4)] transition">
             เริ่มวิเคราะห์ดวง
           </button>
         </div>
