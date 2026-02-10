@@ -12,7 +12,7 @@ type Star = {
   opacity: number;
 };
 
-export default function Home() {
+export default function Page() {
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
   const [stars, setStars] = useState<Star[]>([]);

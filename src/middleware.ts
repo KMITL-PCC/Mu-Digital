@@ -1,11 +1,10 @@
 import { NextResponse, type NextRequest } from 'next/server';
 
-// --- Global Cache (เก็บค่าไว้นอก Function เพื่อ Performance) ---
+// --- Global Cache ---
 let cachedServerPublicIp: string | null = null;
 let lastFetchTime = 0;
 const CACHE_DURATION = 1000 * 60 * 5; // 5 นาที
 
-// ฟังก์ชันเช็ค Private/Local IP (ครอบคลุม LAN ทั้งหมด)
 function isPrivateIp(ip: string) {
   return (
     ip === '::1' ||
@@ -21,11 +20,9 @@ function isPrivateIp(ip: string) {
 
 export async function middleware(request: NextRequest) {
   const isGuardEnabled = process.env.ENABLE_IP_GUARD === 'true';
-
-  // ถ้าปิด Guard ไว้ ไม่ต้องเสียเวลาคำนวณ
   if (!isGuardEnabled) return NextResponse.next();
 
-  // 1. หา Visitor IP (รองรับ Ngrok/Docker Proxy)
+  // --- Visitor IP ---
   let visitorIp =
     request.headers.get('x-forwarded-for')?.split(',')[0].trim() ||
     request.headers.get('x-real-ip') ||
@@ -36,7 +33,7 @@ export async function middleware(request: NextRequest) {
     visitorIp = visitorIp.replace('::ffff:', '');
   }
 
-  // 2. Auto Fetch Server Public IP (พร้อม Cache)
+  // --- Fetch Server Public IP (with cache) ---
   const now = Date.now();
   if (!cachedServerPublicIp || now - lastFetchTime > CACHE_DURATION) {
     try {
@@ -45,47 +42,29 @@ export async function middleware(request: NextRequest) {
         cachedServerPublicIp = (await res.text()).trim();
         lastFetchTime = now;
       }
-    } catch (err) {
-      console.warn('⚠️ Failed to fetch Server IP:', err);
+    } catch {
+      // ถ้า fetch ไม่ได้ → อย่าพัง flow
     }
   }
 
   const isLanOrLocal = isPrivateIp(visitorIp);
-  const isPublicMatch = cachedServerPublicIp && visitorIp === cachedServerPublicIp;
+  const isPublicMatch =
+    cachedServerPublicIp && visitorIp === cachedServerPublicIp;
   const isAllowed = isLanOrLocal || isPublicMatch;
 
-  const logIcon = isAllowed ? '✅' : '❌';
-  const matchReason = isLanOrLocal 
-    ? '(Matches LAN/Local)' 
-    : isPublicMatch 
-      ? '(Matches Public IP)' 
-      : '(No Match)';
+  const pathname = request.nextUrl.pathname;
+  const isErrorPage = pathname === '/access-denied';
 
-  console.log(`
-  ${logIcon} [IP GUARD CHECK]
-  --------------------------------------------------
-  👤 Visitor IP    : ${visitorIp}
-  🏠 Server IP     : ${cachedServerPublicIp || 'Fetching...'}
-  📊 Comparison    : ${visitorIp} == ${cachedServerPublicIp || '?'}
-  💡 Result        : ${isAllowed ? 'ALLOWED' : 'DENIED'} ${matchReason}
-  --------------------------------------------------
-  `);
-
-  // 5. จัดการ Redirect
-  const isRootPage = request.nextUrl.pathname === '/';
-  const isErrorPage = request.nextUrl.pathname === '/access-denied';
-
+  // ❌ BLOCK ONLY
   if (!isAllowed && !isErrorPage) {
-    return NextResponse.redirect(new URL('/access-denied', request.url));
-  }
-
-  if (isAllowed && isRootPage) {
-    return NextResponse.redirect(new URL('/home', request.url));
+    return NextResponse.redirect(
+      new URL('/access-denied', request.url)
+    );
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
+  matcher: ['/((?!api|_next|favicon.ico).*)'],
 };
