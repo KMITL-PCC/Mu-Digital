@@ -1,17 +1,24 @@
 services:
   app-prod:
+    image: projectyear3/kmitl-fair-fullstack:latest
     container_name: mu-digital-prod
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: runner
     restart: always
-
-    ports:
-      - "0.0.0.0:80:4000"
     environment:
       - DATABASE_URL=${DATABASE_URL}
       - NODE_ENV=production
       - PORT=4000
       - HOSTNAME=0.0.0.0
       - ENABLE_IP_GUARD=${ENABLE_IP_GUARD}
+    expose:
+      - "4000"
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx_gateway
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - app-prod
