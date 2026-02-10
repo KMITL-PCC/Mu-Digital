@@ -32,7 +32,7 @@ export default function Home() {
 
 	return (
 		<div className="relative h-screen w-full overflow-hidden font-serif bg-black">
-			<div className="bg-[#000] w-70 h-10 absolute right-0 bottom-4 z-50" />
+			<div className="bg-black w-70 h-10 absolute right-0 bottom-4 z-50" />
 			{/* 1. Spline Scene */}
 			<iframe
 				src="https://my.spline.design/untitled-X4MgDf5FQFHsZRTrWr1WUjsX-D1A/"
@@ -72,7 +72,7 @@ export default function Home() {
 					initial={{ opacity: 0, letterSpacing: "0.1em" }}
 					animate={{ opacity: 1, letterSpacing: "0.3em" }}
 					transition={{ duration: 1 }}
-					className="mb-3 text-sm md:text-base tracking-[0.3em] text-purple-300 uppercase"
+					className="mb-3 text-sm md:text-[50px] tracking-[0.3em] text-purple-300 uppercase"
 				>
 					Celestial Analysis
 				</motion.p>
@@ -81,7 +81,7 @@ export default function Home() {
 					initial={{ opacity: 0, y: 20 }}
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ duration: 0.8 }}
-					className="text-white text-5xl md:text-7xl font-bold tracking-wide drop-shadow-[0_0_20px_rgba(168,85,247,0.5)]"
+					className="text-white text-5xl md:text-[200px] font-bold tracking-wide drop-shadow-[0_0_20px_rgba(168,85,247,0.5)]"
 				>
 					Astrologer
 				</motion.h1>
@@ -97,7 +97,7 @@ export default function Home() {
 					initial={{ opacity: 0 }}
 					animate={{ opacity: 1 }}
 					transition={{ delay: 0.8 }}
-					className="max-w-xl text-sm md:text-lg text-gray-300 leading-relaxed font-light"
+					className="max-w-xl text-sm md:text-[25px] text-gray-300 leading-relaxed font-light"
 				>
 					วิเคราะห์ดวงชะตาด้วยศาสตร์โหราศาสตร์
 					<br />
@@ -112,7 +112,7 @@ export default function Home() {
 				>
 					<button
 						onClick={() => router.push("/gender")}
-						className="rounded-full border border-purple-400/60 px-8 py-3 text-purple-200 hover:bg-purple-400/20 hover:shadow-[0_0_30px_rgba(168,85,247,0.4)] transition cursor-pointer"
+						className="rounded-full border border-purple-400/60 px-8 py-3 text-[25px] text-purple-200 hover:bg-purple-400/20 hover:shadow-[0_0_30px_rgba(168,85,247,0.4)] transition cursor-pointer"
 					>
 						เริ่มวิเคราะห์ดวง
 					</button>
